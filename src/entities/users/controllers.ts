@@ -76,3 +76,45 @@ export const register = async (req: Request, res: Response) => {
       userRegistered: result.toObject(),
     });
   };
+
+  export const findUsers = async (req: Request, res: Response) => {
+    const requestingUserRole = req.token?.role;
+  
+    if (requestingUserRole !== 'admin') {
+      return handleUnauthorized(res);
+    }
+  
+    const { page = 1, limit = 10, sort, search, role} = req.query;
+    const skip = (Number(page) - 1) * Number(limit);
+  
+    try {
+      let query = userExtendedModel.find();
+      const users = await query.skip(skip).limit(parseInt(limit as string, 10));
+  
+      if (role && typeof role === 'string') {
+        query = query.where({ role });
+      }
+  
+      if (sort === 'ASC') {
+        query = query.sort({ name: 1 });
+      } else if (sort === 'DSC') {
+        query = query.sort({ name: -1 });
+      }
+  
+      if (search && typeof search === 'string') {
+        query = query.find({
+          $or: [
+            { name: { $regex: new RegExp(search, 'i') } },
+            { email: { $regex: new RegExp(search, 'i') } },
+          ],
+        });
+      }
+  
+      return res.status(200).json(users);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+
+ 
