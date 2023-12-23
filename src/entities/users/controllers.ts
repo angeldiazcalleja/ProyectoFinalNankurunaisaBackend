@@ -66,7 +66,7 @@ export const register = async (req: Request, res: Response) => {
     const hashedPassword = bcrypt.hashSync(password, CONF.HASH_ROUNDS);
   
     const newUser = new userExtendedModel({
-      name, surname, email, phone, password: hashedPassword, role: 'admin',
+      name, surname, email, phone, role, password: hashedPassword,
     });
   
     const result = await newUser.save();
@@ -117,7 +117,7 @@ export const register = async (req: Request, res: Response) => {
     }
   };
 
-  export const findCustomer = async (req: Request, res: Response) => {
+  export const findUser = async (req: Request, res: Response) => {
     const { _id } = req.params;
     const requestingUserId = req.token?._id;
     const requestingUserRole = req.token?.role; 
@@ -136,4 +136,40 @@ export const register = async (req: Request, res: Response) => {
     } else {
       return handleNotFound(res);
     }
+  };
+
+  export const modifyUser = async (req: Request, res: Response) => {
+    const { _id } = req.params;
+    const { name, surname, email, phone, role, password } = req.body;
+    const userIdFromToken = req.token?._id;
+    const roleIdFromToken = req.token?.role;
+  
+    const user = await userExtendedModel.findOne({ _id: new Types.ObjectId(_id) });
+  
+    const unauthorizedMessage = "You do not have permission to modify this account.";
+    if (!user || (roleIdFromToken === 'customer' && userIdFromToken !== user._id.toString()) || (roleIdFromToken !== 'admin' && userIdFromToken !== user._id.toString())) {
+      return res.status(403).json({
+        message: unauthorizedMessage,
+        details: "Additional details about why the request is unauthorized.",
+  
+      });
+    }
+  
+    if (name) user.name = name;
+    if (surname) user.surname = surname;
+    if (email) user.email = email;
+    if (phone) user.phone = phone;
+  
+    if (password) {
+      const hashedPassword = bcrypt.hashSync(password, CONF.HASH_ROUNDS);
+      user.password = hashedPassword;
+    }
+  
+    if (roleIdFromToken === 'admin' && role) {
+      user.role = role;
+    }
+  
+    const result = await user.save();
+  
+    return res.status(200).json(result);
   };

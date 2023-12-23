@@ -39,7 +39,17 @@ router.get("/", authMiddleware, async (req: Request, res: Response) => {
   
   router.get("/:_id", authMiddleware, async (req: Request, res: Response) => {
     try {
-      await UserController.findCustomer(req, res);
+      await UserController.findUser(req, res);
+    } catch (error) {
+      res.status(500).json({
+        message: "Internal Server Error",
+      });
+    }
+  });
+
+  router.put("/:_id", authMiddleware, async (req: Request, res: Response) => {
+    try {
+      await UserController.modifyUser(req, res);
     } catch (error) {
       res.status(500).json({
         message: "Internal Server Error",
