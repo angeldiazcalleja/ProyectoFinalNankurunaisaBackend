@@ -54,3 +54,29 @@ export const getDestinationById = (req: Request, res: Response) => {
     });
 };
 
+export const updateDestinationById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { name, description } = req.body;
+  
+    const existingDestination = await destinationsExtendedModel.findById(id);
+  
+    if (!existingDestination) {
+      return res.status(404).json({ message: "Destination not found" });
+    }
+
+    if (name) {
+      existingDestination.name = name;
+    }
+  
+    if (description) {
+      existingDestination.description = description;
+    }
+  
+    try {
+      const updatedDestination = await existingDestination.save();
+      res.status(200).json(updatedDestination);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  };
