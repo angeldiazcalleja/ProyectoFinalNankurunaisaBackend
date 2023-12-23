@@ -7,6 +7,7 @@ const destinationsExtendedSchema = new Schema(
         enum: ["Palaos", "BoaVista", "Svalrgaror"],
       },
     description: { type: String, maxlength:180},
+    deleted: { type: Boolean, default: false },
   },
   {
     versionKey: false,

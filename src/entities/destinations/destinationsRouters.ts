@@ -35,5 +35,13 @@ router.get('/', authMiddleware, async (_req, res) => {
       res.status(500).json({ message: "Internal Server Error" });
     }
   });
+
+  router.delete('/:id', authMiddleware, async (req, res) => {
+    try {
+      await DestinationsController.deleteDestinationById(req, res);
+    } catch (error) {
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
   
 export default router;

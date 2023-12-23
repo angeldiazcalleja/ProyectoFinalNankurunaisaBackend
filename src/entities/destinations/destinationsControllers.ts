@@ -80,3 +80,18 @@ export const updateDestinationById = async (req: Request, res: Response) => {
       res.status(500).json({ message: "Internal Server Error" });
     }
   };
+
+  export const deleteDestinationById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+  
+    const existingDestination = await destinationsExtendedModel.findById(id);
+  
+    if (!existingDestination) {
+      return res.status(404).json({ message: "Destination not found" });
+    }
+  
+    existingDestination.deleted = true;
+    await existingDestination.save();
+
+    res.status(204).json({ message: "Destination deleted" });
+  };
