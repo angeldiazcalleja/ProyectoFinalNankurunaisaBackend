@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const routers_1 = __importDefault(require("./src/entities/users/routers"));
 const appointmentsRouters_1 = __importDefault(require("./src/entities/appointments/appointmentsRouters"));
+const destinationsRouters_1 = __importDefault(require("./src/entities/destinations/destinationsRouters"));
 const cors_1 = __importDefault(require("cors"));
 const config_1 = __importDefault(require("./src/core/config"));
 const app = (0, express_1.default)();
@@ -22,6 +23,7 @@ app.use((0, cors_1.default)());
 app.use("/users", routers_1.default);
 app.use("/auth", routers_1.default);
 app.use("/appointments", appointmentsRouters_1.default);
+app.use("/destinations", destinationsRouters_1.default);
 app.listen(PORT, () => {
     console.log("Server is up and running on " + PORT);
 });
