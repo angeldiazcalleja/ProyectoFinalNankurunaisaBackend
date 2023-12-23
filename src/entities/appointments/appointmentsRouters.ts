@@ -28,6 +28,15 @@ router.get('/:_id', authMiddleware, async (req: Request, res: Response) => {
   }
 });
 
+router.put('/:_id', authMiddleware, async (req: Request, res: Response) => {
+
+  try {
+    await AppointmentController.updateAppointment(req, res);
+  } catch (error) {
+    res.status(500).json({  message: "Internal Server Error" });
+  }
+});
+
 
 
 export default router;

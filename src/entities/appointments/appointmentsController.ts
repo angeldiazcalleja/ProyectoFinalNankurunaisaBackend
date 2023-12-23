@@ -158,3 +158,73 @@ export const getAppointmentById = async (req: Request, res: Response) => {
     appointment: appointment.toObject(),
   });
 };
+
+export const updateAppointment = async (req: Request, res: Response) => {
+  const { _id } = req.params;
+  const { role, _id: userId } = req.token;
+  const { date, startTime, endTime } = req.body;
+
+  const appointment = await appointmentsExtendedModel.findById(_id);
+
+  if (!appointment) {
+    return handleNotFound(res);
+  }
+
+  const unauthorizedMessage =
+    "You do not have permission to modify this appointment.";
+  if (role === "customer" && appointment.customerId.toString() !== userId) {
+    return res.status(403).json({
+      message: unauthorizedMessage,
+    });
+  }
+
+  if (
+    role === "personalAssistant" &&
+    appointment.personalAssistantId.toString() !== userId
+  ) {
+    return res.status(403).json({
+      message: unauthorizedMessage,
+    });
+  }
+
+  const conflictingAppointment = await appointmentsExtendedModel.findOne({
+    _id: { $ne: _id },
+    date,
+    $or: [
+      {
+        $and: [
+          { startTime: { $lt: endTime } },
+          { endTime: { $gt: startTime } },
+        ],
+      },
+      {
+        $and: [
+          { startTime: { $lt: endTime } },
+          { endTime: { $gt: startTime } },
+        ],
+      },
+    ],
+  });
+
+  if (conflictingAppointment) {
+    return res.status(400).json({
+      message:
+        "The new date and time coincide with another existing appointment for this customer or tattoo artist.",
+    });
+  }
+
+  const result = await appointmentsExtendedModel.findByIdAndUpdate(
+    _id,
+    { $set: { date, startTime, endTime } },
+    { new: true }
+  );
+
+  console.log(result)
+  return result
+    ? res.status(200).json({
+        message: "Appointment successfully modified.",
+        updatedAppointment: result.toObject(),
+      })
+    : handleNotFound(res);
+   
+};
