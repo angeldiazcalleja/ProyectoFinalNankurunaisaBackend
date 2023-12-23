@@ -173,3 +173,41 @@ export const register = async (req: Request, res: Response) => {
   
     return res.status(200).json(result);
   };
+
+  export const deleteUser = async (req: Request, res: Response) => {
+    const { _id } = req.params;
+    const userIdFromToken = req.token?._id?.toString();
+  
+    const { ObjectId } = Types;
+    const objectId = new ObjectId(_id); 
+  
+    if (
+      userIdFromToken &&
+      req.token?.role === "customer" &&
+      userIdFromToken !== _id
+    ) {
+      return res.status(403).json({
+        message: "You do not have permission to delete this account.",
+      });
+    }
+  
+    if (req.token?.role === "admin") {
+      const result = await userExtendedModel.updateOne(
+        { _id: objectId },
+        { isDeleted: true }
+      );
+  
+      return result.modifiedCount === 1
+        ? res.status(200).json(result)
+        : handleNotFound(res);
+    }
+  
+    const result = await userExtendedModel.updateOne(
+      { _id: objectId },
+      { isDeleted: true }
+    );
+  
+    return result.modifiedCount === 1
+      ? res.status(200).json(result)
+      : handleNotFound(res);
+  };
