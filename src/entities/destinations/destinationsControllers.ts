@@ -1,4 +1,3 @@
-// destinationsControllers.ts
 import { Request, Response } from "express";
 import { destinationsExtendedModel } from "./destinationsModel";
 
@@ -21,3 +20,13 @@ export const createDestination = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+
+export const getAllDestinations = (_req: Request, res: Response) =>
+  destinationsExtendedModel
+    .find()
+    .then(allDestinations => res.status(200).json(allDestinations))
+    .catch(error => {
+      console.error(error);
+      res.status(500).json({ message: "Internal Server Error" });
+    });

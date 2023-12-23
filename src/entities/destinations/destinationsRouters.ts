@@ -12,6 +12,12 @@ router.post('/', authMiddleware, async (req: Request, res: Response) => {
   }
 });
 
-
-
+router.get('/', authMiddleware, async (_req, res) => {
+    try {
+      await DestinationsController.getAllDestinations(_req, res);
+    } catch (error) {
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
+  
 export default router;
