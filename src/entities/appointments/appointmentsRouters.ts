@@ -37,6 +37,13 @@ router.put('/:_id', authMiddleware, async (req: Request, res: Response) => {
   }
 });
 
+router.delete("/:_id", authMiddleware, async (req: Request, res: Response) => {
+  try {
+    await AppointmentController.deleteAppointment(req, res);
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 
 export default router;

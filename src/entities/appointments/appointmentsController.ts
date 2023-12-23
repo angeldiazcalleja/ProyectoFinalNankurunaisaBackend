@@ -228,3 +228,45 @@ export const updateAppointment = async (req: Request, res: Response) => {
     : handleNotFound(res);
    
 };
+
+export const deleteAppointment = async (req: Request, res: Response) => {
+  const { _id } = req.params;
+  const { role, _id: userId } = req.token;
+  const appointment = await appointmentsExtendedModel.findById(_id);
+
+  if (!appointment) {
+    return handleNotFound(res);
+  }
+
+  const unauthorizedMessage =
+    "You do not have permission to delete this appointment.";
+
+  if (role === "customer" && appointment.customerId.toString() !== userId) {
+    return res.status(403).json({
+      message: unauthorizedMessage,
+    });
+  }
+
+  if (
+    role !== "admin" &&
+    !(role === "customer" && appointment.customerId.toString() === userId)
+  ) {
+    return res.status(403).json({
+      message: unauthorizedMessage,
+    });
+  }
+
+  const result = await appointmentsExtendedModel.findByIdAndUpdate(
+    _id,
+    { $set: { isDeleted: true } },
+    { new: true }
+  );
+
+  if (result) {
+    return res.status(200).json({
+      message: "Appointment deleted successfully.",
+    });
+  } else {
+    return handleNotFound(res);
+  }
+};
