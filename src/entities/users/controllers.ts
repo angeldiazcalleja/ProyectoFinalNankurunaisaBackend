@@ -117,4 +117,23 @@ export const register = async (req: Request, res: Response) => {
     }
   };
 
- 
+  export const findCustomer = async (req: Request, res: Response) => {
+    const { _id } = req.params;
+    const requestingUserId = req.token?._id;
+    const requestingUserRole = req.token?.role; 
+  
+    const user = await userExtendedModel.findOne({
+      _id: _id,
+      isDeleted: false,
+    });
+  
+    if (user) {
+      if (requestingUserRole === "admin" || (requestingUserRole === "customer" && user._id.toString() === requestingUserId)) {
+        return res.status(200).json(user);
+      } else {
+        return handleUnauthorized(res);
+      }
+    } else {
+      return handleNotFound(res);
+    }
+  };

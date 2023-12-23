@@ -27,4 +27,25 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
+router.get("/", authMiddleware, async (req: Request, res: Response) => {
+    try {
+      await UserController.findUsers(req, res);
+    } catch (error) {
+      res.status(500).json({
+        message: "Internal Server Error",
+      });
+    }
+  });
+  
+  router.get("/:_id", authMiddleware, async (req: Request, res: Response) => {
+    try {
+      await UserController.findCustomer(req, res);
+    } catch (error) {
+      res.status(500).json({
+        message: "Internal Server Error",
+      });
+    }
+  });
+  
+
 export default router
