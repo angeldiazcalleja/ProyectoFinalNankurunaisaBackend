@@ -8,6 +8,7 @@ import {
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import CONF from "../../core/config";
+import { Types } from "mongoose";
 
 export const login = async (req: Request, res: Response) => {
   try {
