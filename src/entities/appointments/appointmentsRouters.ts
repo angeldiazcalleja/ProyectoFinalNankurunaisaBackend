@@ -12,4 +12,13 @@ router.post('/', authMiddleware, async (req: Request, res: Response) => {
   }
 });
 
+router.get('/', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    await AppointmentController.getAppointments(req, res);
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+
 export default router;

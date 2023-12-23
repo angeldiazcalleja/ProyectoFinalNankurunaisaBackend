@@ -98,3 +98,38 @@ export const createAppointment = async (req: Request, res: Response) => {
     newAppointment: savedAppointment.toObject(),
   });
 };
+
+export const getAppointments = async (req: Request, res: Response) => {
+  const { role, _id: userId } = req.token;
+  const { page = '1', limit = '10' } = req.query;
+
+  const pageNumber = parseInt(page as string, 10);
+  const limitNumber = parseInt(limit as string, 10);
+
+  let query;
+  if (role === "customer") {
+    query = { customerId: userId };
+  } else if (role === "personalAssistant") {
+    query = { personalAssistantId : userId };
+  } else {
+    query = {};
+  }
+
+  try {
+    const totalAppointments = await appointmentsExtendedModel.countDocuments(query);
+
+    const appointments = await appointmentsExtendedModel
+      .find(query)
+      .skip((pageNumber - 1) * limitNumber)
+      .limit(limitNumber);
+
+    return res.status(200).json({
+      message: "Appointments retrieved successfully.",
+      appointments: appointments.map((appointment) => appointment.toObject()),
+      totalAppointments: totalAppointments,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
