@@ -19,5 +19,13 @@ router.get('/', authMiddleware, async (_req, res) => {
       res.status(500).json({ message: "Internal Server Error" });
     }
   });
-  
+
+  router.get('/:id', authMiddleware, async (req, res) => {
+    try {
+      await DestinationsController.getDestinationById(req, res);
+    } catch (error) {
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }); 
+
 export default router;
