@@ -133,3 +133,28 @@ export const getAppointments = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const getAppointmentById = async (req: Request, res: Response) => {
+  const { role, _id: userId } = req.token;
+  const { _id: appointmentId } = req.params;
+
+  let query;
+  if (role === "customer") {
+    query = { customerId: userId, _id: appointmentId };
+  } else if (role === "personalAssistant") {
+    query = { personalAssistantId: userId, _id: appointmentId };
+  } else {
+    query = { _id: appointmentId };
+  }
+
+  const appointment = await appointmentsExtendedModel.findOne(query);
+
+  if (!appointment) {
+    return handleNotFound(res);
+  }
+
+  return res.status(200).json({
+    message: "Appointment retrieved successfully.",
+    appointment: appointment.toObject(),
+  });
+};
