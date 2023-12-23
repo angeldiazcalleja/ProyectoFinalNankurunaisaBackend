@@ -1,5 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
+import userRouter from "./src/entities/users/routers";
 import cors from "cors";
 import CONF from "./src/core/config";
 
@@ -16,7 +17,9 @@ mongoose
   .catch((err) => console.log("Database connection error: " + err));
 
   app.use(cors());
-
+  app.use("/users", userRouter);
+  app.use("/auth", userRouter);
+ 
   
 app.listen(PORT, () => {
   console.log("Server is up and running on " + PORT);
