@@ -13,6 +13,6 @@ const BookingsxtendedSchema = new Schema(
     timestamps: true,
   });
 
-export const bookingExtendedModel = mongoose.model("Bookings", BookingsxtendedSchema);
+export const bookingsExtendedModel = mongoose.model("Bookings", BookingsxtendedSchema);
 export default BookingsxtendedSchema;
 

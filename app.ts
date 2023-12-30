@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import userRouter from "./src/entities/users/routers";
 import appointmentRouter from "./src/entities/appointments/appointmentsRouters";
 import destinationRouter from "./src/entities/destinations/destinationsRouters";
+import bookingRouter from "./src/entities/bookings/bookingsRouters";
 
 
 import cors from "cors";
@@ -25,6 +26,7 @@ mongoose
   app.use("/auth", userRouter);
   app.use("/appointments", appointmentRouter)
  app.use("/destinations", destinationRouter)
+ app.use("/bookings", bookingRouter)
   
 app.listen(PORT, () => {
   console.log("Server is up and running on " + PORT);
