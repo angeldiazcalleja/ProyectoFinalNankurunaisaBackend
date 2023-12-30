@@ -64,3 +64,30 @@ export const getAllBookings = async (req, res) => {
       res.status(500).json({ error: 'Error interno del servidor' });
     }
   };
+
+  export const updateBookingById = async (req, res) => {
+    const { bookingId } = req.params;
+    const { information, pay } = req.body;
+  
+    try {
+      const booking = await bookingsExtendedModel.findByIdAndUpdate(
+        bookingId,
+        { information, pay },
+        { new: true }
+      );
+  
+      if (!booking) {
+        res.status(404).json({ message: 'Booking not found' });
+        return;
+      }
+  
+      res.status(200).json({
+        message: 'Booking updated successfully',
+        updatedBooking: booking.toObject(),
+      });
+    } catch (error) {
+      console.error('Error al actualizar la reserva por ID:', error);
+  
+      res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  };
