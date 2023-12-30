@@ -27,3 +27,21 @@ export const createBooking = async (req, res) => {
     return res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
+
+
+export const getAllBookings = async (req, res) => {
+    try {
+      const allBookings = await bookingsExtendedModel.find();
+  
+      // Usar res.status como propiedad, no como función
+      res.status(200).json({
+        message: 'All bookings retrieved successfully',
+        bookings: allBookings,
+      });
+    } catch (error) {
+      console.error('Error al obtener todas las reservas:', error);
+  
+      // Usar res.status como propiedad, no como función
+      res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  };
