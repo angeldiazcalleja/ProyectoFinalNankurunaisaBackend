@@ -3,6 +3,7 @@ import { appointmentsExtendedModel } from "./appointmentsModel";
 import { userExtendedModel } from "../users/model";
 import { handleNotFound } from "../../core/errorHandlers";
 
+
 export const createAppointment = async (req: Request, res: Response) => {
   const { customerId, personalAssistantId, date, startTime, endTime} =
     req.body;
@@ -268,5 +269,27 @@ export const deleteAppointment = async (req: Request, res: Response) => {
     });
   } else {
     return handleNotFound(res);
+  }
+};
+
+export const restoreDeletedAppointment = async (req: Request, res: Response) => {
+  const { _id: appointmentId } = req.params;
+
+  try {
+    // Buscar y actualizar la cita eliminada usando el modelo
+    const restoredAppointment = await appointmentsExtendedModel.findByIdAndUpdate(
+      appointmentId,
+      { isDeleted: false },
+      { new: true } // Devuelve la cita actualizada
+    );
+
+    if (!restoredAppointment) {
+      return res.status(404).json({ error: 'Cita no encontrada o no eliminada.' });
+    }
+
+    res.json(restoredAppointment);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al recuperar la cita eliminada.' });
   }
 };

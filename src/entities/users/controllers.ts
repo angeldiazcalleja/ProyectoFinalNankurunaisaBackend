@@ -171,7 +171,7 @@ export const register = async (req: Request, res: Response) => {
   
     const result = await user.save();
   
-    return res.status(200).json(result);
+    return res.status(200).json(result)
   };
 
   export const deleteUser = async (req: Request, res: Response) => {
