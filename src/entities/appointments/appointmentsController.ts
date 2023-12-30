@@ -276,11 +276,10 @@ export const restoreDeletedAppointment = async (req: Request, res: Response) => 
   const { _id: appointmentId } = req.params;
 
   try {
-    // Buscar y actualizar la cita eliminada usando el modelo
     const restoredAppointment = await appointmentsExtendedModel.findByIdAndUpdate(
       appointmentId,
       { isDeleted: false },
-      { new: true } // Devuelve la cita actualizada
+      { new: true } 
     );
 
     if (!restoredAppointment) {

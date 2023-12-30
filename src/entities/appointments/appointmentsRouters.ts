@@ -45,7 +45,7 @@ router.delete("/:_id", authMiddleware, async (req: Request, res: Response) => {
   }
 });
 
-router.put('/restore/:_id', async (req: Request, res: Response) => {
+router.put('/restore/:_id', authMiddleware, async (req: Request, res: Response) => {
   try{
     await AppointmentController.restoreDeletedAppointment(req,res);
   } catch (error) {
@@ -53,7 +53,5 @@ router.put('/restore/:_id', async (req: Request, res: Response) => {
   }
 })
 
-
- 
 
 export default router;
