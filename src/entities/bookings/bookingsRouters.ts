@@ -21,5 +21,14 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 });
 
+router.get('/:bookingId', authMiddleware, async (req, res) => {
+  try {
+    await BookingController.getBookingById(req, res);
+  } catch (error) {
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+
 
 export default router

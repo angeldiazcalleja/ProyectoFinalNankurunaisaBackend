@@ -33,15 +33,34 @@ export const getAllBookings = async (req, res) => {
     try {
       const allBookings = await bookingsExtendedModel.find();
   
-      // Usar res.status como propiedad, no como función
       res.status(200).json({
         message: 'All bookings retrieved successfully',
         bookings: allBookings,
       });
     } catch (error) {
       console.error('Error al obtener todas las reservas:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  };
+
+  export const getBookingById = async (req, res) => {
+    const { bookingId } = req.params;
   
-      // Usar res.status como propiedad, no como función
+    try {
+      const booking = await bookingsExtendedModel.findById(bookingId);
+  
+      if (!booking) {
+        res.status(404).json({ message: 'Booking not found' });
+        return;
+      }
+  
+      res.status(200).json({
+        message: 'Booking retrieved successfully',
+        booking,
+      });
+    } catch (error) {
+      console.error('Error al obtener la reserva por ID:', error);
+  
       res.status(500).json({ error: 'Error interno del servidor' });
     }
   };
