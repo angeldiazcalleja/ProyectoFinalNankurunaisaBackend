@@ -91,3 +91,30 @@ export const getAllBookings = async (req, res) => {
       res.status(500).json({ error: 'Error interno del servidor' });
     }
   };
+
+
+  export const deletedBookingById = async (req, res) => {
+    const { bookingId } = req.params;
+  
+    try {
+      const booking = await bookingsExtendedModel.findByIdAndUpdate(
+        bookingId,
+        { isDeleted: true },
+        { new: true }
+      );
+  
+      if (!booking) {
+        res.status(404).json({ message: 'Booking not found' });
+        return;
+      }
+  
+      res.status(200).json({
+        message: 'Booking deleted successfully',
+        deletedBooking: booking.toObject(),
+      });
+    } catch (error) {
+      console.error('Error al realizar una eliminación lógica de la reserva por ID:', error);
+  
+      res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  };

@@ -38,5 +38,13 @@ router.put('/:bookingId', authMiddleware, async (req, res) => {
 });
 
 
+router.delete('/:bookingId', authMiddleware, async (req, res) => {
+  try {
+    await BookingController.deletedBookingById(req, res);
+  } catch (error) {
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
 
 export default router
