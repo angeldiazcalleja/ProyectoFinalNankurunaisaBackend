@@ -28,10 +28,15 @@ export const createBooking = async (req, res) => {
   }
 };
 
-
 export const getAllBookings = async (req, res) => {
     try {
-      const allBookings = await bookingsExtendedModel.find();
+      const { page = 1, limit = 10 } = req.query;
+      const skip = (page - 1) * limit;
+  
+      const allBookings = await bookingsExtendedModel
+        .find()
+        .skip(skip)
+        .limit(limit);
   
       res.status(200).json({
         message: 'All bookings retrieved successfully',
@@ -42,6 +47,7 @@ export const getAllBookings = async (req, res) => {
       res.status(500).json({ error: 'Error interno del servidor' });
     }
   };
+  
 
   export const getBookingById = async (req, res) => {
     const { bookingId } = req.params;
