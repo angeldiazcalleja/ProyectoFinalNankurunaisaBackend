@@ -2,16 +2,16 @@ import { bookingsExtendedModel } from './bookingsModel';
 
 export const createBooking = async (req, res) => {
   try {
-    const { customerId, reservationId, information, pay } = req.body;
+    const { date, customerId, destinationId, information, pay } = req.body;
 
-    if (!customerId || !reservationId || !information || !pay) {
+    if (!date || !customerId || !destinationId || !information || !pay) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
     const newBooking = new bookingsExtendedModel({
       date: new Date(),
       customerId,
-      reservationId,
+      destinationId,
       information,
       pay,
     });
