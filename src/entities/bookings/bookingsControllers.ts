@@ -1,32 +1,36 @@
 import { bookingsExtendedModel } from './bookingsModel';
-
 export const createBooking = async (req, res) => {
-  try {
-    const { date, customerId, destinationId, information, pay } = req.body;
+    try {
+      const { date, customerId, destinationId, information, pay } = req.body;
+  
+      if (!date || !customerId || !destinationId || !information || !pay) {
+        return res.status(400).json({ error: 'All fields are required' });
+      }
 
-    if (!date || !customerId || !destinationId || !information || !pay) {
-      return res.status(400).json({ error: 'All fields are required' });
+      if (!/^[0-9a-fA-F]{24}$/.test(destinationId)) {
+        return res.status(400).json({ error: 'Invalid destinationId format' });
+      }
+  
+      const newBooking = new bookingsExtendedModel({
+        date: new Date(),
+        customerId,
+        destinationId,
+        information,
+        pay,
+      });
+  
+      const savedBooking = await newBooking.save();
+  
+      return res.status(201).json({
+        message: 'Booking created successfully',
+        newBooking: savedBooking.toObject(),
+      });
+    } catch (error) {
+      console.error('Error al crear la reserva:', error);
+      return res.status(500).json({ error: 'Error interno del servidor' });
     }
-
-    const newBooking = new bookingsExtendedModel({
-      date: new Date(),
-      customerId,
-      destinationId,
-      information,
-      pay,
-    });
-
-    const savedBooking = await newBooking.save();
-
-    return res.status(201).json({
-      message: 'Booking created successfully',
-      newBooking: savedBooking.toObject(),
-    });
-  } catch (error) {
-    console.error('Error al crear la reserva:', error);
-    return res.status(500).json({ error: 'Error interno del servidor' });
-  }
-};
+  };
+  
 
 export const getAllBookings = async (req, res) => {
     try {

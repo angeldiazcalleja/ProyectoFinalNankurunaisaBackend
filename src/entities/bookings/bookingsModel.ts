@@ -6,7 +6,7 @@ const BookingsxtendedSchema = new Schema(
     customerId: {type: Types.ObjectId, ref: 'Users', maxlength: 24 },
     destinationId: { type: Types.ObjectId, ref: 'Destinations', maxlength: 24 },
     information: { type: String, maxlength:180},
-    pay: { type: String, maxlength:30},
+    pay: { type: String, maxlength:50},
     isDeleted: {type: Boolean,default: false},
   },
   {
