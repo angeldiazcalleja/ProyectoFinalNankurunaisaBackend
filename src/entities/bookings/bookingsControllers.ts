@@ -1,6 +1,13 @@
 import { bookingsExtendedModel } from './bookingsModel';
 export const createBooking = async (req, res) => {
+  
     try {
+
+      const requestingUserRole = req.token?.role;
+      if (requestingUserRole !== 'admin') {
+        return res.status(403).json({ error: 'Unauthorized. Only admins can create destinations.' });
+      }
+  
       const { date, customerId, destinationId, information, pay } = req.body;
   
       if (!date || !customerId || !destinationId || !information || !pay) {
