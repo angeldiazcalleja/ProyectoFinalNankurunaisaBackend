@@ -159,6 +159,7 @@ export const register = async (req: Request, res: Response) => {
     if (surname) user.surname = surname;
     if (email) user.email = email;
     if (phone) user.phone = phone;
+    if (role) user.role = role;
   
     if (password) {
       const hashedPassword = bcrypt.hashSync(password, CONF.HASH_ROUNDS);
@@ -211,3 +212,5 @@ export const register = async (req: Request, res: Response) => {
       ? res.status(200).json(result)
       : handleNotFound(res);
   };
+
+

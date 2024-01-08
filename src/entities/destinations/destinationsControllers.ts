@@ -2,6 +2,11 @@ import { Request, Response } from "express";
 import { destinationsExtendedModel } from "./destinationsModel";
 
 export const createDestination = async (req: Request, res: Response) => {
+  // const requestingUserRole = req.token?.role;
+  //     if (requestingUserRole !== 'admin') {
+  //       return res.status(403).json({ error: 'Unauthorized. Only admins can create destinations.' });
+  //     }
+  
   try {
     const { name, description } = req.body;
 
