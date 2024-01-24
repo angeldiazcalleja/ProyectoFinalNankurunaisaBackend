@@ -28,7 +28,7 @@ mongoose
     optionsSuccessStatus: 204,
   };
 
-  app.use(cors());
+  app.use(cors(corsOptions));
   app.use("/users", userRouter);
   app.use("/auth", userRouter);
   app.use("/appointments", appointmentRouter)
