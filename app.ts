@@ -21,6 +21,13 @@ mongoose
   })
   .catch((err) => console.log("Database connection error: " + err));
 
+  const corsOptions = {
+    origin: 'https://preeminent-panda-fd88f1.netlify.app/',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204,
+  };
+
   app.use(cors());
   app.use("/users", userRouter);
   app.use("/auth", userRouter);
